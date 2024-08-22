@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15.2
+    container_name: postgres-dev
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: comments_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3.11-management
+    container_name: rabbitmq-dev
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  adminer:
+    image: adminer:4.8.1
+    container_name: adminer
+    ports:
+      - "8090:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres-dev
+      ADMINER_DESIGN: galkaev
+      ADMINER_DEFAULT_TYPE: postgresql
+      ADMINER_DEFAULT_USER: $POSTGRES_USER
+      ADMINER_DEFAULT_PASSWORD: $POSTGRES_PASSWORD
+
+volumes:
+  postgres_data:
